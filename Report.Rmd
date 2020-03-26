@@ -1,0 +1,120 @@
+---
+title: "Experiment Report"
+author: "Feng Xiaofang"
+date: "2020/3/25"
+output: 
+  html_document:
+    df_print: paged
+  pdf_document: 
+    latex_engine: xelatex
+abstract: |
+    This article aims to conduct experiments and compare results for a particular mathematical theorem. 
+---
+
+```{r setup, include=FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 5, fig.height = 4, dpi = 300,
+                      out.width = "90%", fig.align = "center")
+```
+
+# 1 Introduction
+
+By conducting experiments, the goal is to produce a experiment report for a particular mathematical theorem.
+
+# 2 Math Environments
+
+Consider approximation of the distribution function of $N(0,1)$,
+
+\begin{equation}
+\Phi(t) = \int_{-\infty}^t \frac{1}{\sqrt{2\pi}} e^{-y^2 / 2} dy,
+\end{equation}
+
+by the Monte Carlo methods:
+
+\begin{equation}
+\hat\Phi(t) = \frac{1}{n} \sum_{i=1}^n I(X_i \le t),
+\end{equation}
+
+where $X_i$'s are a random sample from $N(0, 1)$, and $I(\cdot)$ is
+the indicator function.
+
+
+# 3 Table
+
+Experiment with the approximation at
+$n \in \{10^2, 10^3, 10^4\}$ at
+$t \in \{0.0, 0.67, 0.84, 1.28, 1.65, 2.32, 2.58, 3.09, 3.72\}$ to
+form a table. The table should include the True Value for Comparison.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+t=c(0.0,0.67, 0.84,1.28,1.65,2.32,2.58,3.09,3.72)
+x=pnorm( t, mean = 0, sd = 1)
+
+n1=10^2
+z1=c(rep(0,9))
+w1=matrix(0,9,n1)
+y1=c(rnorm(n1,mean=0,sd=1))
+for(k in 1:9)
+{
+  for(j in 1:n1)
+  {w1[k,j]=sign(y1[j]<=t[k])}
+  z1[k]=sum(w1[k,])/n1}
+
+n2=10^3
+z2=c(rep(0,9))
+w2=matrix(0,9,n2)
+y2=c(rnorm(n2,mean=0,sd=1))
+for(k in 1:9)
+{
+  for(j in 1:n2)
+  {w2[k,j]=sign(y2[j]<=t[k])}
+  z2[k]=sum(w2[k,])/n2}
+
+
+n3=10^4
+z3=c(rep(0,9))
+w3=matrix(0,9,n3)
+y3=c(rnorm(n3,mean=0,sd=1))
+for(k in 1:9)
+{
+  for(j in 1:n3)
+  {w3[k,j]=sign(y3[j]<=t[k])}
+  z3[k]=sum(w3[k,])/n3}
+
+
+tb<-tibble(
+  t=t,
+  true=x,
+  value1=z1,
+  value2=z2,
+  value3=z3
+)
+
+knitr::kable(head(tb), booktabs = TRUE,
+             caption = 'The true value for comparison')
+```
+
+# 4 Figures
+
+By repeating the experiment 100 times, draw box plots of the 100 approximation errors at each t using ggplot2 for each n.
+
+## 4.1 When n=10^2,
+
+<div align=center>
+![](E:/git/boxplot/boxplot1.png)
+
+
+## 4.2 When n=10^3,
+
+<div align=center>
+![](E:/git/boxplot/boxplot2.png)
+
+## 4.3 When n=10^4,
+
+<div align=center>
+![](E:/git/boxplot/boxplot3.png)
+
+# 5 Conclusion
+
+I form a table by experiencing with the approximation at different values of n and t, and draw box plots of the 100 approximation errors at each t using ggplot2 for each n. As you can see from the above three boxplots, the error range is smaller and closer to zero as n increases, and the error range is also smaller and closer to zero as t increases.
